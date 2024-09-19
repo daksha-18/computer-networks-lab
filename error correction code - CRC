@@ -1,0 +1,27 @@
+#include <stdio.h>
+#include <string.h>
+
+#define POLYNOMIAL 0xA001
+
+unsigned short crc16(unsigned char *data, unsigned int length) {
+    unsigned short crc = 0xFFFF;
+    for (unsigned int i = 0; i < length; i++) {
+        crc ^= data[i];
+        for (unsigned char j = 0; j < 8; j++) {
+            if (crc & 0x0001) {
+                crc >>= 1;
+                crc ^= POLYNOMIAL;
+            } else {
+                crc >>= 1;
+            }
+        }
+    }
+    return crc;
+}
+
+int main() {
+    unsigned char data[] = "Hello, World!";
+    unsigned short crc = crc16(data, strlen((char *)data));
+    printf("CRC16: %04X\n", crc);
+    return 0;
+}
